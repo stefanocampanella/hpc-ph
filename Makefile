@@ -1,6 +1,7 @@
 CC=pandoc
 FLAGS=--standalone --normalize --smart --toc
 
+all: html pdf tex doc
 default: document.pdf
 html: index.html
 pdf: document.pdf
@@ -9,7 +10,7 @@ doc: document.odt
 
 
 index.md: assemble.sh src/*.md src/*.txt src/*.yml
-	@echo "Assemblying source..."
+	@echo "Assembling sources..."
 	@./assemble.sh
 
 index.html: index.md assemble.sh main.css 
@@ -19,3 +20,4 @@ index.html: index.md assemble.sh main.css
 document.%: index.md
 	@echo "Compiling with pandoc..."
 	@$(CC) $(FLAGS) $< -o $@ 
+

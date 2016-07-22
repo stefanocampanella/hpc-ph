@@ -5,9 +5,9 @@ then
   rm index.md
 fi
 
-while read line
+while read -r line
 do
-	cat src/$line >> index.md
+	cat "src/${line}" >> index.md
 	echo -ne "\n\n" >> index.md
 done < src/contents.txt
 
