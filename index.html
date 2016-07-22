@@ -25,10 +25,13 @@
 </ul></li>
 <li><a href="#principi-di-sicurezza">Principi di sicurezza</a><ul>
 <li><a href="#algoritmi-di-crittografia-simmetrica-e-asimmetrica">Algoritmi di crittografia simmetrica e asimmetrica</a></li>
+<li><a href="#firma-digitale">Firma digitale</a></li>
+<li><a href="#certificati-personali-secondo-lo-standard-x.509">Certificati personali secondo lo standard X.509</a></li>
 </ul></li>
 <li><a href="#grid-computing">Grid Computing</a><ul>
 <li><a href="#principi-di-calcolo-a-grid">Principi di calcolo a Grid</a></li>
 <li><a href="#sottomissione-di-job-ad-una-grid">Sottomissione di job ad una Grid</a></li>
+<li><a href="#gestione-della-sicurezza-in-grid">Gestione della sicurezza in Grid</a></li>
 </ul></li>
 <li><a href="#cloud-computing-storage">Cloud Computing &amp; Storage</a><ul>
 <li><a href="#virtualizzazione">Virtualizzazione</a><ul>
@@ -182,17 +185,71 @@
 <p>In pratica è non è possibile ottimizzare tutti questi parametri contemporaneamente (si consideri ad esempio il throughput e la latenza) ed è necessario realizzare un compromesso. I criteri con cui si realizza quest’ultimo sono caratteristici del particolare algoritmo di scheduling e rispondono a particolari esigenze, ad esempio, nel caso di un sistema in cui la sottomissione di job è un servizio a pagamento, parametri come la fairness ed il waiting time diventano prioritarì.</p>
 <p>Alcuni esempi algoritmi di scheduling sono Unix Scheduling, FCFS (first Come, first Served), SJR (Shortest Job first), Small Job first / Big Job first, Priority Scheduling, Round Robin, Multilevel Queue, Multilevel Feedback Queue, FairShare.</p>
 <h1 id="principi-di-sicurezza">Principi di sicurezza</h1>
-<h2 id="algoritmi-di-crittografia-simmetrica-e-asimmetrica">Algoritmi di crittografia simmetrica e asimmetrica</h2>
 <p>Si considerano preliminarmente alcune definizioni generali</p>
 <ul>
 <li><strong>Credenziali</strong>: producono prova dell’identità dell’utente, in genere sono uno <em>username</em> ed una <em>password</em> assegnati in combinazione unica</li>
 <li><strong>Autenticazione</strong>: verifica dell’identità dell’utente</li>
 <li><strong>Autorizzazioni</strong> o permessi, vengono assegnati all’utente assieme alle credenziali e, a seguito della autenticazione, gli permettono o meno di eseguire operazioni su un sistema (istanziare processi, leggere o scrivere dati, etc.)</li>
-<li><strong>Confidenzialità</strong>: capacità di inviare un messagio che solo il destinatario possa comprendere</li>
+<li><strong>Confidenzialità</strong>: capacità di inviare un messaggio che solo il destinatario possa comprendere</li>
 <li><strong>Integrità</strong>: capacità di stabilire che un messaggio ricevuto sia identico a quello inviato dal mittente, ovvero che non vi siano state alterazioni fra l’invio e la consegna</li>
 <li><strong>autenticità e non ripudio</strong>: rispettivamente capacità di stabilire l’identità del mittente ed impossibilità da parte di quest’ultimo di disconoscere il messaggio</li>
 </ul>
-<p>Nei sistemi informatici odierni la confidenzialità è ottenuta modificando il contenuto del messaggio in modo che questo sia incomprensibile ad altri che non siano il destinatario, che dovrà riconvertire il messaggio in forma leggibile.</p>
+<h2 id="algoritmi-di-crittografia-simmetrica-e-asimmetrica">Algoritmi di crittografia simmetrica e asimmetrica</h2>
+<p>Nei sistemi informatici la confidenzialità è ottenuta crittograficamente. Il messaggio viene cifrato dal mittente utilizzando un algoritmo (noto anche al destinatario) ed una certa <em>chiave</em> mentre il destinatario lo decifra utilizzando una seconda chiave.</p>
+<p>Storicamente i primi algoritmi crittografici erano a <strong>chiave simmetrica</strong>, nel senso che una chiave poteva essere ottenuta dall’altra (ad esempio perchè erano identiche). Per esempio <strong>AES</strong> (Advanced Encryption Standard, anche conosciuto come <em>Rijndael</em>) è un algoritmo a chiave simmetrica selezionato dal NIST (National Institute of Standards and Technology) sia perché (ad oggi) crittograficamente sicuro sia per le sue performance.</p>
+<p>Gli algoritmi a chiave simmetrica pongono intrinsecamente dei rischi di sicurezza, indipendentemente dalla bontà degli algoritmi. Infatti perché il destinatario possa ricostruire il messaggio è <em>necessario che conosca la chiave</em>. Il mittente è pertanto costretto a comunicargliela e per fare ciò è necessario un canale di trasmissione sicuro, che però potrebbe non esistere (ovviamente non ha senso crittografare una chiave simmetrica con una chiave simmetrica perché si riporrebbe il problema).</p>
+<p>Inoltre gli algoritmi a chiave simmetrica soffrono di un ulteriore problema. Infatti il mittente dovrà condividere una chiave differente con ogni destinatario (posto che sia interessato a trasmettere in maniera segreta con ciascun destinatario rispetto ad ogni altro destinatario). Questo comporta che il numero di chiavi (che devono essere trasmesse e conservate in maniera sicura) cresca in una rete di utenti come il quadrato del numero di questi ultimi.</p>
+<p>Questo genere di problemi è risolto tramite l’uso di <strong>chiavi asimmetriche</strong>. Negli algoritmi asimmetrici esistono due chiavi, una detta <strong>pubblica</strong> e l’altra <strong>privata</strong>. La chiave pubblica è unicamente in grado di cifrare, invece la chiave privata è sia in grado di cifrare che di decifrare un messaggio cifrato utilizzando una chiave pubblica o privata.</p>
+<p>Tramite l’uso di algoritmi asimmetrici il destinatario può inviare (o rendere appunto pubblica) una copia della propria chiave pubblica, ma conservare la propria chiave privata, e per il mittente sarà sufficiente cifrare il messaggio utilizzando la chiave pubblica del destinatario. Una volta consegnato il messaggio il destinatario potrà decifrarlo utilizzando la propria chiave privata.</p>
+<p>In generale, essendo questi algoritmi computazionalmente costosi, nel caso di messaggi molto grandi si adotta usualmente la strategia di cifrare questi ultimi usando una chiave simmetrica e poi di condividere la chiave simmetrica cifrandola con un algoritmo asimmetrico.</p>
+<p>Uno dei primi algoritmi a chiave asimmetrica ad essere scoperti (1978) ed oggi maggiormente adottati è <strong>RSA</strong> (da nomi dei suoi inventori Ronald Rivest, Adi Shamir e Leonard Adleman). In questo caso le chiavi consistono in genere di una coppia di file ed una <em>passphrase</em>, nota solo al proprietario della chiave privata.</p>
+<p>L’algoritmo RSA ha inoltre la seguente utile proprietà. Si è già visto che un messaggio cifrato usando la chiave pubblica può essere decifrato utilizzando la chiave privata, tuttavia è vero anche il contrario: ovvero un messaggio cifrato utilizzando la chiave privata può essere decifrato usando la chiave pubblica.</p>
+<h2 id="firma-digitale">Firma digitale</h2>
+<p>Per <strong>hash</strong> o <strong>one-way hash function</strong> si intende una funzione <span class="math inline"><em>H</em></span> (in pratica un algoritmo) che riceve una stringa di lunghezza qualsiasi <span class="math inline"><em>M</em></span> e restituisce una stringa di lunghezza fissata <span class="math inline"><em>h</em></span> tale che</p>
+<ol style="list-style-type: decimal">
+<li>dato <span class="math inline"><em>M</em></span>, sia semplice (economico) calcolare <span class="math inline"><em>h</em> = <em>H</em>(<em>M</em>)</span></li>
+<li>dato <span class="math inline"><em>h</em></span>, sia difficile (costoso) calcolare gli elementi di <span class="math inline"><em>H</em><sup>−1</sup>(<em>h</em>)</span></li>
+<li>dato <span class="math inline"><em>M</em></span>, sia difficile (costoso) calcolare <span class="math inline"><em>M</em>′</span> tale che <span class="math inline"><em>H</em>(<em>M</em>)=<em>H</em>(<em>M</em>′)</span> (ci si riferisce a questa eventualità col termine <strong>collisione</strong>)</li>
+</ol>
+<p>Si osserva che, a differenza degli algoritmi crittografici, gli algoritmi di hashing non sono per definizione invertibili (non esiste una corrispondenza univoca fra <span class="math inline"><em>M</em></span> e <span class="math inline"><em>h</em></span>). La conseguenza di questo fatto è che esistono certamente collisioni.</p>
+<p>Può essere più economico, o interessante per altre ragioni, calcolare le funzioni di hash per due stringe e confrontare i risultati che confrontare direttamente le stringe di partenza. In questo caso il risultato delle funzioni di hash si chiama <strong>checksum</strong>. In questo caso si preferiscono funzioni di hash che abbiano la ulteriore proprietà che la probabilità di collisione sia <em>piccola</em> per stringhe di partenza <em>simili</em>.</p>
+<p>L’integrità, l’autenticità ed il non ripudio possono essere ottenuti sfruttando le funzioni di hash e l’algoritmo RSA. In questo caso il mittente che vuole apporre la propria <strong>firma digitale</strong> su un messaggio (eventualmente in cifrato) calcola lo hash del messaggio, lo cifra con la sua chiave privata ed allega il risultato al messaggio. In questo modo il destinatario potrà calcolare lo hash del messaggio, decifrare tramite la chiave pubblica quello in allegato ed effettuare un confronto.</p>
+<p>Se i due hash coincidono il destinatario potrà dedurre che</p>
+<ol style="list-style-type: decimal">
+<li>Il messaggio ricevuto coincide (a meno di una collisione, eventualità con probabilità trascurabili) con quello su cui il mittente ha apportato la firma</li>
+<li>Il mittente può essere solo il proprietario della chiave privata (autenticità) e quest’ultimo non può negare di aver firmato il messaggio (non ripudio)</li>
+</ol>
+<h2 id="certificati-personali-secondo-lo-standard-x.509">Certificati personali secondo lo standard X.509</h2>
+<p>Gli algoritmi a chiave asimmetrica e la firma digitale costituiscono una soluzione a certi problemi di sicurezza se sono vere alcune premesse</p>
+<ol style="list-style-type: decimal">
+<li>Le chiavi private degli utenti non sono compromesse</li>
+<li>Gli utenti sono in grado di associare con sicurezza l’identità di altri utenti alle rispettive chiavi pubbliche (che in qualche modo devono essere state distribuite in precedenza)</li>
+</ol>
+<p>Esistono due modelli per garantire la seconda di queste premesse</p>
+<ol style="list-style-type: decimal">
+<li><strong>X.509</strong>: controllo centrale da parte di un terzo individuo (<em>hierarchical organization</em>)</li>
+<li><strong>PGP</strong>: sistema distribuito con relazioni fra pari (<em>web of trust</em>)</li>
+</ol>
+<p>Nel secondo caso si sfrutta l’assunto che se si conosce l’identità di un utente e quest’ultimo <em>garantisce</em> sull’identità di un terzo utente, allora si può considerare (ragionevolmente) sicura l’identità di questo terzo utente, anche nel caso non fossimo in grado di stabilirne direttamente l’identità.</p>
+<p>Questo ragionamento si può applicare più volte ed è eventualmente possibile stabilire in questo modo una o più catene di relazioni di fiducia fra mittente e destinatario.</p>
+<p>In pratica in una <em>web of trust</em> un utente che sia sicuro della identità associata ad una chiave pubblica può firmarla e queste chiavi pubbliche firmate sono raccolte in database liberamente accessibili online. Software come <strong>GPG</strong> (GNU Privacy Guard), oltre a permettere di cifrare, decifrare e firmare messaggi, ricostruiscono automaticamente queste relazioni di fiducia in base alle chiavi pubbliche fidate nel proprio <em>portachiavi</em>.</p>
+<p>X.509 è uno standard per PKI (Public Key Infrastructure), che permette di realizzare relazioni di fiducia tra utenti tramite un controllo centrale.</p>
+<p>Esistono due concetti fondamentali nello standard X.509</p>
+<ol style="list-style-type: decimal">
+<li><strong>Certification Authority</strong> o CA</li>
+<li><strong>Certificati digitali</strong></li>
+</ol>
+<p>La certification authority è una terza parte la cui identità è per ipotesi fidata (<em>trust anchor</em>) che può rilasciare certificati digitali per utenti, software o calcolatori. Si occupa di verificare l’identità dei richiedenti (tramite le RA, Registration Authorities) e pubblica periodicamente un elenco dei certificati compromessi che sono ancora in periodo di validità nelle CRL (Certificate Revocation Lists).</p>
+<p>I certificati digitali rappresentano una estensione del concetto di chiave pubblica e contengono almeno i seguenti campi</p>
+<ol style="list-style-type: decimal">
+<li>la chiave pubblica del proprietario del certificato</li>
+<li>l’identità del proprietario (es. dati anagrafici)</li>
+<li>alcune informazioni sulla CA</li>
+<li>periodo di validità del certificato</li>
+<li>firma digitale della CA</li>
+</ol>
+<p>Il mittente in questo modo può esaminare il certificato (dopo averne ricevuto copia) ed essere sicuro della corrispondenza fra l’identità del destinatario e la sua chiave pubblica.</p>
+<p>Per poter applicare lo schema X.509 è tuttavia necessario che un utente possieda la chiave pubblica della CA (che deve essere stata ottenuta tramite un canale sicuro perché è per ipotesi fidata). Queste chiavi vengono solitamente distribuite sotto forma di certificati, detti <em>root certificate</em>, in modo da contenere informazioni addizionali come ad esempio il periodo di validità della chiave. Inoltre i root certificate sono <strong>self signed</strong>, ovvero firmati dallo stessa CA, ed è pertanto possibile stabilirne l’integrità (l’autenticità è data per ipotesi).</p>
 <h1 id="grid-computing">Grid Computing</h1>
 <h2 id="principi-di-calcolo-a-grid">Principi di calcolo a Grid</h2>
 <p>Una <strong>Grid computazionale</strong>, o semplicemente una Grid, è una infrastruttura hardware e software che garantisca un accesso affidabile, coerente, capillare ed economico a risorse computazionali ad alte prestazioni.</p>
@@ -226,10 +283,25 @@
 <li>Non viene condiviso solo un processo fra i nodi (dunque tempo di CPU e memoria) ma anche dati e software (in breve viene offert, in accordo ai permessi posseduti dall’utente, l’accesso ad una intera macchina)</li>
 <li>L’esecuzione di un singolo job avviene su una singola macchina (o su un singolo cluster di macchine), ovvero i job sono tra loro indipendenti.</li>
 </ol>
+<p>Un esempio di Grid è <strong>EGI</strong> (European Grid Infrastructure), nata da progetti precedenti come DataGrid e EGEEE (Enabling Grids for E-SciencE).</p>
 <h2 id="sottomissione-di-job-ad-una-grid">Sottomissione di job ad una Grid</h2>
-<p>Per Grid middleware si intende una serie di componenti software che rendono possibile il calcolo su Grid. Alcuni esempi di Grid middleware sono gLite e EMI.</p>
+<p>Per Grid middleware si intende una serie di componenti software che rendono possibile il calcolo su Grid. Alcuni esempi di Grid middleware sono gLite e EMI (collegati a EGI).</p>
 <p>Una analisi delle varie fasi dalla sottomissione di un job ad una Grid alla restituzione del output permette di analizzare i principali componenti di una Grid middleware.</p>
 <p>Il componente di una Grid middleware con cui un utente si interfaccia è appunto detto <strong>UI</strong> (User Interface) e tramite quest’ultimo è infine possibile sottomettere un job, in questo contesto anche detto <em>gridlet</em>. Prima di ciò tuttavia un utente deve autenticarsi, per questo fornisce le proprie credenziali al <strong>VOMS</strong> (Virtual Organization Membership Service), il quale restituisce una chiave all’utente che ne garantisce l’appartenenza ad una certa organizzazione virtuale (le organizzazioni virtuali possono comprendere ad esempio i ricercatori di un certo esperimento). Tramite questa chiave l’utente può sottomettere un job al <strong>WMS</strong> (Workload Management System), dove viene inserito in una <strong>coda globale</strong>. Quest’ultimo riceve informazioni dal <strong>Information Index</strong> o <strong>Information System</strong>, che contiene un database dei nodi attualmente disponibili, delle loro policy e dei file archiviati in Grid. Tramite le informazioni ricevute dal Information Index ed una descrizione del job (sottomessa dall’utente insieme a quest’ultimo in un linguaggio detto JDL, Job Description Language), il <strong>Resource Broker</strong> computa il nodo più appropriato su cui eseguire il job (matchmaking). A questo punto il WMS può inoltrare il job al nodo, dove viene inserito in una <strong>coda locale</strong>. Una volta eseguito l’output del job viene inoltrato al WMS e finalmente all’utente.</p>
+<h2 id="gestione-della-sicurezza-in-grid">Gestione della sicurezza in Grid</h2>
+<p>In genere in una Grid viene utilizzato (ed ampliato) lo standard X.509. Ad esempio in EGI le certification authority riconosciute sono diverse ed hanno in genere base nazionale, tuttavia esiste un progetto per la coordinazione delle CA europee chiamato EUGridPMA (quest’ultimo in realtà include diverse CA extra-europee, oltre a collaborare con analoge organizzazioni in Asia e negli Stati Uniti).</p>
+<p>Sempre in EGI i root certificate sono distribuiti tramite <em>pacchetti</em> per diversi sistemi operativi e disponibili in repository pubblici (dopo aver aggiunto il repository è possibile installare tutti i certificati tramite il metapacchetto <code>lcg-CA</code>).</p>
+<p>Uno degli standard di sicurezza adottato su Grid è (Grid Security Infrastructure) basato sullo standard PKI X.509. In questo standard ogni transazione (scambio di dati, invio di istruzioni, etc.) è <strong>mutualmente autenticato</strong>.</p>
+<p>Infatti tramite lo standard di sicurezza X.509 è possibile risolvere (oltre ai problemi di confidenzialità, integrità e non ripudio) il problema della autenticazione. Il meccanismo è il seguente.</p>
+<p>All’inizio di una transazione tra due utenti A e B (ciascuno dei due può essere un individuo, un software o una macchina)</p>
+<ol style="list-style-type: decimal">
+<li>A invia a B una copia del proprio certificato.</li>
+<li>B ne verifica la validità tramite la firma della CA (che può verificare a sua volta tramite i root certificates).</li>
+<li>Se la verifica del certificato di A è andato a buon termine, B invia un messaggio casuale (<em>challenge string</em>) che contiene un <em>timestamp</em>, ovvero una indicazione che permette di datare univocamente la transazione.</li>
+<li>A firma la challenge string ed invia la firma a B.</li>
+<li>B verifica la firma e autentica A</li>
+</ol>
+<p>Perchè vi sia mutua autenticazione si ripete la procedura a ruoli invertiti. Si osserva che il solo certificato non autentica A, ma garantisce soltanto la corrispondenza fra l’identità di A ed una chiave pubblica. Invece nella procedura descritta A viene autenticato nella misura in cui si è certi che solo A sia in possesso della chiave privata di A. L’ultima considerazione è cruciale in tutti i sistemi di sicurezza basati su chiavi asimmetriche e deve essere sempre tenuto presente.</p>
 <h1 id="cloud-computing-storage">Cloud Computing &amp; Storage</h1>
 <p>Le tecnologie di cloud computig hanno avuto negli ultimi anni largo impiego nelle realtà aziendali ed è sempre più probabile che nel futuro diventeranno parte integrante dellle infrastrutture per il calcolo scientifico (attualmente già in fase di sperimentazione).</p>
 <p>Storicamente Amazon è stata fra le prime aziende a sperimentare queste tecnologie ed a offrire servizi collegati. Ciò nacque dalla esigenza di sfruttare, dunque vendere, le risorse di calcolo in eccesso a propria disposizione, le quali erano state acquistate per affrontare i picchi di domanda sui propri store online in certi periodi dell’anno.</p>
