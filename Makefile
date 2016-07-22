@@ -1,12 +1,12 @@
 CC=pandoc
 FLAGS=--standalone --normalize --smart --toc
 
-all: html pdf tex doc
 default: document.pdf
 html: index.html
 pdf: document.pdf
 tex: document.tex
 doc: document.odt
+all: html pdf tex doc
 
 
 index.md: assemble.sh src/*.md src/*.txt src/*.yml

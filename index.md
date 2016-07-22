@@ -5,6 +5,7 @@ lang: it-IT
 otherlangs: en-US
 documentclass: article
 geometry: a4paper
+fontfamily: cmbright
 ---
 
 
