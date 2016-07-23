@@ -265,14 +265,14 @@
 <p>Inoltre una Grid presuppone l’assenza di</p>
 <ol style="list-style-type: decimal">
 <li><strong>Central control</strong>: una istituzione/nodo centrale a cui facciano riferimento tutti gli altri.</li>
-<li><strong>Omniscence</strong>: la conoscenza da parte di ogni istituzione/nodo dello stato di tutti gli altri.</li>
+<li><strong>Omniscience</strong>: la conoscenza da parte di ogni istituzione/nodo dello stato di tutti gli altri.</li>
 <li><strong>Existing Trust Relationship</strong>: autenticazione degli individui o delle istituzioni sulla base di relazioni di fiducia preesistenti o comunque esterni alla Grid.</li>
 </ol>
 <p>Il genere di problemi che una Grid cerca di risolvere è del tipo</p>
 <blockquote>
 <p>Eseguire il programma X nel sito Y con permessi P, provvedendo accesso ai dati sul sito Z in accordo ai permessi Q</p>
 </blockquote>
-<p>Riassuntivamente una Grid fornisce un livello di astrazione che rende accessibile un ambiente di calolo distribuito ad alte performance per gli utenti e che permette la condivisione di risorse per le istituzioni, in maniera trasparente ed immune da tre generi di eterogeneità:</p>
+<p>Riassuntivamente una Grid fornisce un livello di astrazione che rende accessibile un ambiente di calcolo distribuito ad alte performance per gli utenti e che permette la condivisione di risorse per le istituzioni, in maniera trasparente ed immune da tre generi di eterogeneità:</p>
 <ol style="list-style-type: decimal">
 <li>delle risorse</li>
 <li>delle policy</li>
@@ -280,20 +280,101 @@
 </ol>
 <p>Si osserva che il calcolo su Grid si può definire calcolo distribuito con le seguenti precisazioni</p>
 <ol style="list-style-type: decimal">
-<li>Non viene condiviso solo un processo fra i nodi (dunque tempo di CPU e memoria) ma anche dati e software (in breve viene offert, in accordo ai permessi posseduti dall’utente, l’accesso ad una intera macchina)</li>
+<li>Non viene condiviso solo un processo fra i nodi (dunque tempo di CPU e memoria) ma anche dati e software (in breve viene offerto, in accordo ai permessi posseduti dall’utente, l’accesso ad una intera macchina)</li>
 <li>L’esecuzione di un singolo job avviene su una singola macchina (o su un singolo cluster di macchine), ovvero i job sono tra loro indipendenti.</li>
 </ol>
 <p>Un esempio di Grid è <strong>EGI</strong> (European Grid Infrastructure), nata da progetti precedenti come DataGrid e EGEEE (Enabling Grids for E-SciencE).</p>
 <h2 id="sottomissione-di-job-ad-una-grid">Sottomissione di job ad una Grid</h2>
-<p>Per Grid middleware si intende una serie di componenti software che rendono possibile il calcolo su Grid. Alcuni esempi di Grid middleware sono gLite e EMI (collegati a EGI).</p>
-<p>Una analisi delle varie fasi dalla sottomissione di un job ad una Grid alla restituzione del output permette di analizzare i principali componenti di una Grid middleware.</p>
-<p>Il componente di una Grid middleware con cui un utente si interfaccia è appunto detto <strong>UI</strong> (User Interface) e tramite quest’ultimo è infine possibile sottomettere un job, in questo contesto anche detto <em>gridlet</em>. Prima di ciò tuttavia un utente deve autenticarsi, per questo fornisce le proprie credenziali al <strong>VOMS</strong> (Virtual Organization Membership Service), il quale restituisce una chiave all’utente che ne garantisce l’appartenenza ad una certa organizzazione virtuale (le organizzazioni virtuali possono comprendere ad esempio i ricercatori di un certo esperimento). Tramite questa chiave l’utente può sottomettere un job al <strong>WMS</strong> (Workload Management System), dove viene inserito in una <strong>coda globale</strong>. Quest’ultimo riceve informazioni dal <strong>Information Index</strong> o <strong>Information System</strong>, che contiene un database dei nodi attualmente disponibili, delle loro policy e dei file archiviati in Grid. Tramite le informazioni ricevute dal Information Index ed una descrizione del job (sottomessa dall’utente insieme a quest’ultimo in un linguaggio detto JDL, Job Description Language), il <strong>Resource Broker</strong> computa il nodo più appropriato su cui eseguire il job (matchmaking). A questo punto il WMS può inoltrare il job al nodo, dove viene inserito in una <strong>coda locale</strong>. Una volta eseguito l’output del job viene inoltrato al WMS e finalmente all’utente.</p>
+<p>Per Grid middleware si intende una serie di componenti software che fungono da intermediari tra l’infrastruttura e le applicazioni utente, rendendo possibile la condivisione di risorse ed infine il calcolo su Grid. Alcuni esempi di Grid middleware sono gLite e EMI, entrambi collegati a EGI.</p>
+<p>Le varie componenti di un Grid middleware si possono classificare in</p>
+<ol style="list-style-type: decimal">
+<li><strong>Servizi di Accesso</strong>: CLI, API, etc.</li>
+<li><strong>Servizi di Sicurezza</strong>: autenticazione e autorizzazioni</li>
+<li><strong>Servizi di informazione e monitoraggio</strong>: monitoraggio dello stato dei servizi, del carico dei sistemi, etc.</li>
+<li><strong>Servizi Dati</strong>: catalogo dei file e delle repliche, catalogo dei metadati, archiviazione fisica dei dati</li>
+<li><strong>Servizi di Elaborazione</strong>: gestione dei job, interfacciamento con i siti di calcolo, etc.</li>
+</ol>
+<p>Considerando l’esempio di EGI è possibile illustrare i disersi componenti di un Grid middleware.</p>
+<p>Un utente che vuole sottomettere un job, in questo contesto noto come <em>gridlet</em>, deve preparare un <strong>job description file</strong> ovvero un file che contiene una descrione del job in un linguaggio noto come <strong>JDL</strong> (Job Description Language).</p>
+<p>JDL è un linguaggio flessibile, estensibile e di alto livello, derivato da <strong>ClassAd</strong> (CLASSified Advertisement language), il linguaggio utilizzato dal batch system <em>Condor</em>. Sia JDL che ClassAd contengono una struttura a record composta da un certo numero di attributi separati da un punto e virgola (<code>;</code>).</p>
+<p>Un file JDL in genere contiene almeno i seguenti campi</p>
+<ol style="list-style-type: decimal">
+<li><code>Executable</code> : deve essere uno shell script (in genere bash, csh o tcsh).</li>
+<li><code>StdOutput</code> : nome del file che conterrà la l’output del job (i.e. lo standard output)</li>
+<li><code>StdError</code> : nome del file che conterrà gli errori del job (i.e. lo standard error)</li>
+</ol>
+<p>Altri campi importanti sono</p>
+<ol style="list-style-type: decimal">
+<li><code>Type</code> : può assumere i valori <strong>Job</strong>, che può essere a sua volta normale (default) o parametrico, <strong>DAG</strong> (Directed Acyclic Graph) o <strong>Collection</strong></li>
+<li><code>Argoments</code> : contiene gli argomenti da passare allo script che deve essere eseguito</li>
+<li><code>Environment</code> : contiene una o più variabili d’ambiente da esportare prima di eseguire lo script (in JDL è possibile costruire un vettore di espressioni con le parentesi graffe <code>{}</code>)</li>
+<li><code>InputSandbox</code> : elenco dei file che devono essere inviati insieme al job</li>
+<li><code>OutputSandbox</code> : elenco dei file (inclusi lo standard error e output) che devono essere restituiti in caso di esecuzione con successo del job.</li>
+<li><code>Requirements</code> : richieste sul working node che eseguirà il job (ad esempio sul sistema operativo, supporto per OpenMP o OpenMPI, etc.)</li>
+</ol>
+<p>Si osserva che con una singola richiesta è possibile istanziare più job in una volta, infatti</p>
+<ul>
+<li>un job parametrico è un job in cui uno o più argomenti variano in un intervallo</li>
+<li>un DAG è un insieme di job con relazioni di dipendenza reciproca che possono essere descritte da un grafo diretto aciclico (e per il quale esiste una specifica sintassi)</li>
+<li>una collezione è un insieme di job indipendenti</li>
+</ul>
+<p>Si osserva che in questo modo si riduce il tempo di sottomissione (singola autenticazione/autorizzazione, etc.).</p>
+<p>Considerato lo script di esempio</p>
+<pre><code>#!/bin/sh
+# test.sh
+echo $*</code></pre>
+<p>un semplice job description file può essere (i commenti su una linea usano <code>#</code> quelli su più linee devono essere incapsulati in <code>/* */</code>)</p>
+<pre><code># test.jdl
+
+Executable    = &quot;test.sh&quot;;
+Arguments     = &quot;Hello world!&quot;;
+StdOutput     = &quot;std.out&quot;;
+StdError      = &quot;std.err&quot;;
+InputSandbox  = {&quot;test.sh&quot;};
+OutputSandbox = {&quot;std.out&quot;, &quot;std.err&quot;};</code></pre>
+<p>Il job description file viene quindi inviato al <strong>WMS</strong> (Workload Management System), che (fra gli altri) ha l’incarico di assegnare l’esecuzione del job ad un particolare sito di calcolo (CE, Computing Element, che in generale può essere una macchina o un cluster) tenendo conto delle preferenze espresse nel job description file (matchmaking). A questo punto il job si trova in una <strong>coda globale</strong>, in attesa di essere assegnato. Successivamente il WMS richiede informazioni allo <strong>Information Index</strong> o <strong>Information System</strong>, che contiene un database dei CE attualmente disponibili, del loro carico di lavoro ed eventualmente delle loro policy. Si osserva che a questo scopo i CE comunicano direttamente con lo information index. Tramite queste informazioni uno dei componenti del WMS detto <strong>Resource Broker</strong> computa il CE più opportuno su cui eseguire il job. Il WMS può quindi inoltrare il job su una <strong>coda locale</strong> attraverso un suo componente che il cui compito è interfacciarsi con il batch system locale del CE (CREAM, Computing Resource Execution and Management, per gLite e EMI-ES, EMI Execution Service, per EMI). Fra i batch system supportati figurano PBS(Torque/MAUI), LSF, SGE.</p>
+<p>Ogni passaggio del ciclo di vita di un job è registrato da un servizio chiamato <strong>Logging and Bookkeeping</strong> (LB), con cui sono in comunicazione sia il WMS che il CE. Questo è utile ad esempio per conoscere lo stato di un job che è stato sottomesso, infatti gli utenti possono tracciare lo stato del proprio job conoscendone lo ID (che viene comunicato durante la sottomissione). Dopo essere stato eseguito successo da un <strong>Worker Node</strong> l’output del job viene inoltrato automaticamente (tramite il CE) al WMS , da cui l’utente può ottenere una copia (in questo schema l’utente non si interfaccia mai direttamente col CE, tuttavia non è l’unica implementazione possibile).</p>
+<p>Tra i comandi a disposizione di un utente vi sono</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"><strong>Description</strong></th>
+<th align="left"><strong>Command</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Submitting a job</td>
+<td align="left"><code>glite-wms-job-submit</code></td>
+</tr>
+<tr class="even">
+<td align="left">Checking job status</td>
+<td align="left"><code>glite-wms-job-status</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Retrieving job output</td>
+<td align="left"><code>glite-wms-job-output</code></td>
+</tr>
+<tr class="even">
+<td align="left">Checking job history</td>
+<td align="left"><code>glite-wms-job-logging-info</code></td>
+</tr>
+<tr class="odd">
+<td align="left">Listing compatible resources</td>
+<td align="left"><code>glite-wms-job-list-match</code></td>
+</tr>
+<tr class="even">
+<td align="left">Delegate a proxy</td>
+<td align="left"><code>glite-wms-job-delegate-proxy</code></td>
+</tr>
+</tbody>
+</table>
 <h2 id="gestione-della-sicurezza-in-grid">Gestione della sicurezza in Grid</h2>
 <p>In genere in una Grid viene utilizzato (ed ampliato) lo standard X.509. Ad esempio in EGI le certification authority riconosciute sono diverse ed hanno in genere base nazionale, tuttavia esiste un progetto per la coordinazione delle CA europee chiamato EUGridPMA (quest’ultimo in realtà include diverse CA extra-europee, oltre a collaborare con analoge organizzazioni in Asia e negli Stati Uniti).</p>
 <p>Sempre in EGI i root certificate sono distribuiti tramite <em>pacchetti</em> per diversi sistemi operativi e disponibili in repository pubblici (dopo aver aggiunto il repository è possibile installare tutti i certificati tramite il metapacchetto <code>lcg-CA</code>).</p>
 <p>Uno degli standard di sicurezza adottato su Grid è (Grid Security Infrastructure) basato sullo standard PKI X.509. In questo standard ogni transazione (scambio di dati, invio di istruzioni, etc.) è <strong>mutualmente autenticato</strong>.</p>
 <p>Infatti tramite lo standard di sicurezza X.509 è possibile risolvere (oltre ai problemi di confidenzialità, integrità e non ripudio) il problema della autenticazione. Il meccanismo è il seguente.</p>
-<p>All’inizio di una transazione tra due utenti A e B (ciascuno dei due può essere un individuo, un software o una macchina)</p>
+<p>All’inizio di una transazione tra due utenti A e B (ciascuno dei due può essere un individuo, un software o una macchina), dopo aver stabilito una connessione</p>
 <ol style="list-style-type: decimal">
 <li>A invia a B una copia del proprio certificato.</li>
 <li>B ne verifica la validità tramite la firma della CA (che può verificare a sua volta tramite i root certificates).</li>
@@ -301,7 +382,31 @@
 <li>A firma la challenge string ed invia la firma a B.</li>
 <li>B verifica la firma e autentica A</li>
 </ol>
-<p>Perchè vi sia mutua autenticazione si ripete la procedura a ruoli invertiti. Si osserva che il solo certificato non autentica A, ma garantisce soltanto la corrispondenza fra l’identità di A ed una chiave pubblica. Invece nella procedura descritta A viene autenticato nella misura in cui si è certi che solo A sia in possesso della chiave privata di A. L’ultima considerazione è cruciale in tutti i sistemi di sicurezza basati su chiavi asimmetriche e deve essere sempre tenuto presente.</p>
+<p>Perchè vi sia mutua autenticazione si ripete la procedura a ruoli invertiti. Si osserva che il solo certificato non autentica A, ma garantisce soltanto la corrispondenza fra l’identità di A ed una chiave pubblica. Invece nella procedura descritta (anche nota come CHAP, Challenge-Handshake Authentication Protocol) A viene autenticato nella misura in cui si è certi che solo A sia in possesso della chiave privata di A. L’ultima considerazione è cruciale in tutti i sistemi di sicurezza basati su chiavi asimmetriche e deve essere sempre tenuto presente.</p>
+<p>Nella effettiva implementazione della autenticazione nei servizi Grid viene utilizzata una estensione dei certificati X.509 detta <strong>X.509 proxy certificate</strong> o <strong>certificati proxy</strong>. Questi certificati sono contraddistinti dalle seguenti caratteristiche</p>
+<ol style="list-style-type: decimal">
+<li>Hanno durata piuttosto breve, dell’ordine di alcune ore (usualmente 12) contro i certificati personali che hanno in genere durata annuale</li>
+<li>Contengono al loro interno una coppia di chiavi, pubblica e privata</li>
+</ol>
+<p>Questa estensione ha la seguente motivazione. Nel contesto di una Grid è spesso necessario che un servizio o l’istanza di un software possano agire per conto dell’utente (ad esempio un job può aver bisogno di recuperare una copia di un file e dunque di dover contattare un server ed autenticarsi). Deve pertanto esistere un meccanismo in grado di trasferire la propria capacità di autenticazione, questo meccanismo è noto come <strong>delegazione</strong>.</p>
+<p>Una soluzione ingenua potrebbe essere quella di rilasciare insieme al proprio certificato una copia della propria chiave privata. Tuttavia per quanto già osservato una soluzione di questo genere comporterebbe gravi problemi di sicurezza.</p>
+<p>Quando si crea un certificato proxy vengono create una coppia di chiavi ed incluse nel certificato, tuttavia la propria chiave privata personale <strong>non</strong> viene allegata. In questo modo la propria identità è stata delegata. Infatti un individuo o un servizio in possesso un certificato proxy potrà non solo instaurare una relazione di fiducia con altri utenti (essendo in possesso di un certificato valido), ma anche autenticarsi grazie alla propria chiave privata.</p>
+<p>Inoltre un proxy può delegare a sua volta la propria identità prolungando la catena della fiducia.</p>
+<p>Chiaramente in termini di sicurezza un proxy è un compromesso. Infatti la delegazione implica che esista nel sistema una coppia di chiavi (non cifrate). Pertanto, tramite la chiave privata di un proxy, è possibile impersonare l’identità (delegata) dell’utente che in origine ha creato il proxy. Tuttavia la delegazione è solo temporanea ed ha il grande vantaggio che la chiave privata dell’utente rimane sempre segreta.</p>
+<p>Lo standard GSI prevede ulteriori estensioni a X.509 con lo scopo di semplificare la gestione delle autorizzazioni. Infatti il problema delle autorizzazioni è complesso e consiste nell’accomodare i permessi garantiti da due diverse entità</p>
+<ol style="list-style-type: decimal">
+<li>Virtual Organizazion (VO)</li>
+<li>Resource Provider (RP),</li>
+</ol>
+<p>Lo sviluppo dei <strong>VOMS</strong> (Virtual Organization Membership Service) nei sistemi Grid è stato una risposta all’esigenza di centralizzare la gestione delle autorizzazioni nelle organizzazioni virtuali. A questo scopo i certificati proxy sono stati estesi al fine di poter (opzionalmente) contenere informazioni associate ai permessi entro l’organizzazione virtuale di appartenenza. Queste informazioni sono</p>
+<ol style="list-style-type: decimal">
+<li>Organizzazione virtuale di appartenenza</li>
+<li>Una lista dei gruppi di appartenenza. Infatti le organizzazioni virtuali hanno una struttura ad albero (simile ad un filesystem UNIX) i cui nodi sono le organizzazioni e di cui la VO rappresenta la radice (ogni utente della VO deve appartenere ad almeno un gruppo e può appartenere a più gruppi)</li>
+<li>Ruolo all’interno del gruppo, che può considerarsi come una regolazione fine dei permessi rispetto ai assegnazione ad un gruppo. Si osserva che i ruoli sono relativi al gruppo, nel senso che ruoli con lo stesso identificativo in gruppi diversi hanno diverso significato.</li>
+<li>Capacità, ovvero autorizzazioni speciali o temporanee (un utente può ad esempio avere permessi di amministrazione solamente durante i suoi <em>turni</em>)</li>
+</ol>
+<p>Infine i resource provider sono liberi di computare le autorizzazioni del richiedente sulla base di queste informazioni, delle sue credenziali e delle proprie policy.</p>
+<p>I comandi a disposizione dell’utente sono <code>voms-proxy-init</code>, <code>voms-proxy-destroy</code> e <code>voms-proxy-info</code>. L’invocazione di <code>voms-proxy-init</code> comporta le seguenti operazioni. Viene creato un proxy localmente, successivamente viene inoltrato al server VOMS che aggiunge i campi al proxy e lo firma.</p>
 <h1 id="cloud-computing-storage">Cloud Computing &amp; Storage</h1>
 <p>Le tecnologie di cloud computig hanno avuto negli ultimi anni largo impiego nelle realtà aziendali ed è sempre più probabile che nel futuro diventeranno parte integrante dellle infrastrutture per il calcolo scientifico (attualmente già in fase di sperimentazione).</p>
 <p>Storicamente Amazon è stata fra le prime aziende a sperimentare queste tecnologie ed a offrire servizi collegati. Ciò nacque dalla esigenza di sfruttare, dunque vendere, le risorse di calcolo in eccesso a propria disposizione, le quali erano state acquistate per affrontare i picchi di domanda sui propri store online in certi periodi dell’anno.</p>
@@ -520,7 +625,6 @@
 </tbody>
 </table>
 <p>mentre nella seguente tabella sono riassunte alcune caratteristiche delle tipologie di cloud storage per il caso particolare dello stack per il cloud computing open source <strong>Open Stack</strong></p>
-<p>…</p>
 <h3 id="caratteristiche-di-un-cloud-storage">Caratteristiche di un cloud storage</h3>
 <p>Un servizio di cloud storage possiede le stesse proprietà caratterizzanti di un servizio di cloud computing, ovvero <em>on demand &amp; self service</em>, <em>broad network access</em>, <em>resource pooling</em>, <em>rapid elasticity</em> e <em>measured service</em>. Tuttavia nel caso del cloud storage si aggiungono alcune richieste</p>
 <ul>
@@ -528,7 +632,6 @@
 <li><strong>High Level API:</strong> possibilità di accesso ai dati, oltre che eventualmente tramite standard POSIX, anche tramite una interfaccia da remoto, standard ed universale (in genere un <em>web service</em>)</li>
 </ul>
 <p>In una tecnologia di cloud storage fra gli aspetti di maggior rilievo ci sono le interfacce, ovvero il modo con cui viene esposto l’accesso ai file ai livelli di astrazione superiori.</p>
-<p>Due esempi diametralmente opposti sono lo standa</p>
 <h1 id="analisi-di-big-data">Analisi di Big Data</h1>
 <p>Esigenza di utilizzare i big data: cambia l’approccio all’analisi dei dati: algoritmi più complicati. Si è passati da qualche tera a peta e adesso anche ad exabyte. Quando si parla di analisi a big data quello che vogliamo avere è una architettura scalare e non progettata per un target, ovvero le cui prestazioni richieste dipendano dalla quantità di dati. Esempio: Facebook il cui numero di dati cresce continuamente del tempo senza far trasparire un affanno da parte dell’infrastruttura.</p>
 <h2 id="apache-hadoop">Apache Hadoop</h2>
