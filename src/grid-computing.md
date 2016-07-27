@@ -22,7 +22,7 @@ Inoltre una Grid presuppone l'assenza di
 2. **Omniscience**: la conoscenza da parte di ogni istituzione/nodo dello stato di tutti gli altri.
 3. **Existing Trust Relationship**: autenticazione degli individui o delle istituzioni sulla base di relazioni di fiducia preesistenti o comunque esterni alla Grid.
 
-Il genere di problemi che una Grid cerca di risolvere è del tipo
+Dal punto di vista dell'utente il genere di problemi che una Grid cerca di risolvere è del tipo
 
 > Eseguire il programma X nel sito Y con permessi P, provvedendo accesso ai dati sul sito Z in accordo ai permessi Q
 
@@ -51,9 +51,9 @@ Le varie componenti di un Grid middleware si possono classificare in
 4. **Servizi Dati**: catalogo dei file e delle repliche, catalogo dei metadati, archiviazione fisica dei dati
 5. **Servizi di Elaborazione**: gestione dei job, interfacciamento con i siti di calcolo, etc.
 
-Considerando l'esempio di EGI è possibile illustrare i disersi componenti di un Grid middleware.
+Considerando l'esempio di EGI è possibile illustrare i diversi componenti di un Grid middleware.
 
-Un utente che vuole sottomettere un job, in questo contesto noto come *gridlet*, deve preparare un **job description file** ovvero un file che contiene una descrione del job in un linguaggio noto come **JDL** (Job Description Language).
+Un utente che vuole sottomettere un job, in questo contesto noto come *gridlet*, deve preparare un **job description file** ovvero un file che contiene una descrizione del job in un linguaggio noto come **JDL** (Job Description Language).
 
 JDL è un linguaggio flessibile, estensibile e di alto livello, derivato da **ClassAd** (CLASSified Advertisement language), il linguaggio utilizzato dal batch system *Condor*. Sia JDL che ClassAd contengono una struttura a record composta da un certo numero di attributi separati da un punto e virgola (`;`).
 
@@ -66,7 +66,7 @@ Un file JDL in genere contiene almeno i seguenti campi
 Altri campi importanti sono
 
 1. `Type` : può assumere i valori **Job**, che può essere a sua volta normale (default) o parametrico, **DAG** (Directed Acyclic Graph) o **Collection**
-2. `Argoments` : contiene gli argomenti da passare allo script che deve essere eseguito
+2. `Arguments` : contiene gli argomenti da passare allo script che deve essere eseguito
 3. `Environment` : contiene una o più variabili d'ambiente da esportare prima di eseguire lo script (in JDL è possibile costruire un vettore di espressioni con le parentesi graffe `{}`)
 4. `InputSandbox` : elenco dei file che devono essere inviati insieme al job
 5. `OutputSandbox` : elenco dei file (inclusi lo standard error e output) che devono essere restituiti in caso di esecuzione con successo del job.
@@ -119,11 +119,11 @@ Tra i comandi a disposizione di un utente vi sono
 
 ## Gestione della sicurezza in Grid
 
-In genere in una Grid viene utilizzato (ed ampliato) lo standard X.509. Ad esempio in EGI le certification authority riconosciute sono diverse ed hanno in genere base nazionale, tuttavia esiste un progetto per la coordinazione delle CA europee chiamato EUGridPMA (quest'ultimo in realtà include diverse CA extra-europee, oltre a collaborare con analoge organizzazioni in Asia e negli Stati Uniti).
+In genere in una Grid viene utilizzato (ed ampliato) lo standard X.509. Ad esempio in EGI le certification authority riconosciute sono diverse ed hanno in genere base nazionale, tuttavia esiste un progetto per la coordinazione delle CA europee chiamato EUGridPMA (quest'ultimo in realtà include diverse CA extra-europee, oltre a collaborare con analoghe organizzazioni in Asia e negli Stati Uniti).
 
-Sempre in EGI i root certificate sono distribuiti tramite *pacchetti* per diversi sistemi operativi e disponibili in repository pubblici (dopo aver aggiunto il repository è possibile installare tutti i certificati tramite il metapacchetto `lcg-CA`).
+Sempre in EGI i root certificate sono distribuiti tramite *pacchetti* per diversi sistemi operativi e disponibili in repository pubblici (dopo aver aggiunto il repository è possibile installare tutti i certificati tramite il meta-pacchetto `lcg-CA`).
 
-Uno degli standard di sicurezza adottato su Grid è (Grid Security Infrastructure) basato sullo standard PKI X.509. In questo standard ogni transazione (scambio di dati, invio di istruzioni, etc.) è **mutualmente autenticato**.
+Uno degli standard di sicurezza adottato su Grid è GSI (Grid Security Infrastructure) basato sullo standard PKI X.509. In questo standard ogni transazione (scambio di dati, invio di istruzioni, etc.) è **mutualmente autenticata**.
 
 Infatti tramite lo standard di sicurezza X.509 è possibile risolvere (oltre ai problemi di confidenzialità, integrità e non ripudio) il problema della autenticazione. Il meccanismo è il seguente.
 
@@ -135,7 +135,7 @@ All'inizio di una transazione tra due utenti A e B (ciascuno dei due può essere
 4. A firma la challenge string ed invia la firma a B.
 5. B verifica la firma e autentica A
 
-Perchè vi sia mutua autenticazione si ripete la procedura a ruoli invertiti. Si osserva che il solo certificato non autentica A, ma garantisce soltanto la corrispondenza fra l'identità di A ed una chiave pubblica. Invece nella procedura descritta (anche nota come CHAP, Challenge-Handshake Authentication Protocol) A viene autenticato nella misura in cui si è certi che solo A sia in possesso della chiave privata di A. L'ultima considerazione è cruciale in tutti i sistemi di sicurezza basati su chiavi asimmetriche e deve essere sempre tenuto presente.
+Perché vi sia mutua autenticazione si ripete la procedura a ruoli invertiti. Si osserva che il solo certificato non autentica A, ma garantisce soltanto la corrispondenza fra l'identità di A ed una chiave pubblica. Invece nella procedura descritta (anche nota come CHAP, Challenge-Handshake Authentication Protocol) A viene autenticato nella misura in cui si è certi che solo A sia in possesso della chiave privata di A. L'ultima considerazione è cruciale in tutti i sistemi di sicurezza basati su chiavi asimmetriche e deve essere sempre tenuto presente.
 
 Nella effettiva implementazione della autenticazione nei servizi Grid viene utilizzata una estensione dei certificati X.509 detta **X.509 proxy certificate** o **certificati proxy**. Questi certificati sono contraddistinti dalle seguenti caratteristiche
 
@@ -154,7 +154,7 @@ Chiaramente in termini di sicurezza un proxy è un compromesso. Infatti la deleg
 
 Lo standard GSI prevede ulteriori estensioni a X.509 con lo scopo di semplificare la gestione delle autorizzazioni. Infatti il problema delle autorizzazioni è complesso e consiste nell'accomodare i permessi garantiti da due diverse entità
 
-1. Virtual Organizazion (VO)
+1. Virtual Organization (VO)
 2. Resource Provider (RP),
 
 Lo sviluppo dei **VOMS** (Virtual Organization Membership Service) nei sistemi Grid è stato una risposta all'esigenza di centralizzare la gestione delle autorizzazioni nelle organizzazioni virtuali. A questo scopo i certificati proxy sono stati estesi al fine di poter (opzionalmente) contenere informazioni associate ai permessi entro l'organizzazione virtuale di appartenenza. Queste informazioni sono

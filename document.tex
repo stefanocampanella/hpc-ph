@@ -69,10 +69,12 @@
 }
 \newpage
 
-In questo documento sono raccolti gli appunti e le sbobinature del corso
-\emph{``Calcolo ad Alte Prestazioni per la Fisica''}, tenuto dal
-professor Giacinto Donvito al dipartimento interateneo di Fisica
-dell'Università degli studi di Bari nell'anno accademico 2015/2016.
+\subsection{Sommario}\label{sommario}
+
+In questo documento sono raccolti gli appunti del corso \emph{``Calcolo
+ad Alte Prestazioni per la Fisica''}, tenuto dal professor Giacinto
+Donvito al dipartimento interateneo di Fisica dell'Università degli
+studi di Bari nell'anno accademico 2015/2016.
 
 Per la parte di strumenti per il calcolo scientifico si rimanda al
 manuale \emph{Amministrare GNU/Linux} di S. Piccardi, distribuito con
@@ -95,6 +97,17 @@ e distribuita anch'essa con licenza FDL all'indirizzo
 possa essere utile, tuttavia non è garantita la correttezza dei
 contenuti o della forma. Sono ben gradite segnalazioni di eventuali
 errori.
+
+\subsection{Licenze}\label{licenze}
+
+Il contenuto di questo documento è rilasciato sotto licenza Creative
+Commons Attribution 4.0 International.
+
+The content of this document is licensed under a Creative Commons
+Attribution 4.0 International License. To view a copy of this license,
+visit
+
+\href{http://creativecommons.org/licenses/by/4.0/}{http://creativecommons.org/licenses/by-sa/4.0/}
 
 \newpage
 
@@ -186,10 +199,11 @@ La prima strategia ha dei limiti fisici:
 Il problema della dissipazione del calore è collegato alla dimensione
 dei transistor che compongono la CPU, questa dimensione è a sua volta
 collegata alle dimensioni caratteristiche del processo di litografia
-utilizzato (feature dimension). Il limite attuale per queste dimensioni
-è intorno ai 10 nanometri e non è possibile scendere molto al disotto di
-questa dimensione per via di effetti quantistici (oltre naturalmente al
-limite imposto dalle dimensioni atomiche del supporto di silicio).
+utilizzato (\emph{feature dimension}). Il limite attuale per queste
+dimensioni è intorno ai 10 nanometri e non è possibile scendere molto al
+disotto di questa dimensione per via di effetti quantistici (oltre
+naturalmente al limite imposto dalle dimensioni atomiche del supporto di
+silicio).
 
 L'altro limite è la velocità di I/O che è vincolata al limite fisico
 della velocità della luce per i segnali elettromagnetici nel vuoto.
@@ -201,16 +215,16 @@ I/O, la larghezza di banda della cache, ecc.
 
 \subsection{Tassonomia di Flynn}\label{tassonomia-di-flynn}
 
-La prima forma di parallelismo sperimentata è il pipelining e presenta
-delle analogie con il concetto di catena di montaggio dove, in una linea
-di flusso (pipe) di stazioni di assemblaggio gli elementi vengono
-assemblati a flusso continuo.
+La prima forma di parallelismo sperimentata è il \textbf{pipelining} e
+presenta delle analogie con il concetto di catena di montaggio dove, in
+una linea di flusso (pipe) di stazioni di assemblaggio gli elementi
+vengono assemblati a flusso continuo.
 
 In questo caso le componenti elettroniche specializzate (unità) che
 operano su ciascuna delle 5 fasi attraverso cui viene eseguita una
 istruzione (dal fetch allo store) funzionano simultaneamente. Ciascuna
 lavora sulla istruzione seguente rispetto alla unità successiva e sulla
-istruzione precedente rispetto alla unità precendente. In questo modo si
+istruzione precedente rispetto alla unità precedente. In questo modo si
 evitano i tempi morti sulle singole unità.
 
 Idealmente tutte le stazioni di assemblaggio devono avere la stessa
@@ -231,7 +245,7 @@ Multiple Data stream. Complessivamente sono possibili 4 combinazioni:
 \tightlist
 \item
   \textbf{SISD}: è la tipica architettura di Von Newman (sistemi scalari
-  monoprocessore) e può essere pipelined
+  mono-processore) e può essere pipelined
 \item
   \textbf{MISD}: più flussi di istruzioni lavorano contemporaneamente su
   un unico flusso di dati. Non è stata finora utilizzata praticamente.
@@ -254,7 +268,7 @@ Multiple Data stream. Complessivamente sono possibili 4 combinazioni:
   dei sistemi SIMD.
 \end{itemize}
 
-Per realizzare questi sistemi è necessario che i vari sottosistemi
+Per realizzare sistemi MIMD è necessario che i vari sottosistemi
 comunichino tra loro. Questo può avvenire sia in un solo calcolatore con
 \textbf{un'unica memoria condivisa} fra più processori (per questo detti
 \emph{tightly coupled}), che per questo devono trovarsi nello stesso
@@ -275,7 +289,7 @@ possibili, ricapitolando si ha
   comune. La comunicazione avviene dunque mediante condivisione della
   memoria attraverso un bus.
 \item
-  \textbf{Architettura MIMD multicomputer o distributed memory system}:
+  \textbf{Architettura MIMD multi-computer o distributed memory system}:
   ogni processore ha una memoria propria. I vari processori comunicano
   tra loro mediante una rete che consente a ciascun processore di
   trasmettere e ricevere dati dagli altri. I processori possono anche
@@ -304,7 +318,7 @@ comportano e di performance richieste al sistema
 
 La velocità della condivisione di istruzioni e dati caratteristici dei
 sistemi a memoria condivisa contro la flessibilità e la scalabilità dei
-sistemi a memoria distribuita tendono in maniera natuarale a far
+sistemi a memoria distribuita tendono in maniera naturale a far
 identificare i primi come soluzioni per HPC ed i secondi per HTC.
 
 Anche in questo caso (specialmente nel caso di grandi sistemi) questi
@@ -324,7 +338,7 @@ internet.
 
 Oggi parte della tecnologia sviluppata per SETI@home è confluita in una
 infrastruttura per il calcolo distribuito indipendente dal particolare
-progetto di ricerca denominata BOINC (Berkley Open Infrastructure for
+progetto di ricerca denominata BOINC (Berkeley Open Infrastructure for
 Network Computing). Tramite quest'ultima gli utenti possono decidere di
 donare il proprio tempo di CPU ad uno o più progetti. Lo stesso
 SETI@home prosegue oggi come uno dei progetti ospitati da BOINC.
@@ -339,7 +353,7 @@ descritta
 \tightlist
 \item
   I dati possono essere spacchettati in piccole porzioni (dell'ordine di
-  500 Kbyte), non è pertanto necessaria una connessione ad alte
+  500 KByte), non è pertanto necessaria una connessione ad alte
   performance fra i singoli nodi.
 \item
   Il tempo di CPU necessario per analizzare tali porzioni di dati su
@@ -347,27 +361,35 @@ descritta
 \item
   L'analisi dei segnali in ciascuna porzione è del tutto indipendente
   dalle altre ed è pertanto possibile eseguire tutti i job
-  contemporaneamente (si dice che il problema è \emph{embarassingly
+  contemporaneamente (si dice che il problema è \emph{embarrassingly
   parallel} o \emph{perfectly parallel}).
 \end{enumerate}
 
 \subsection{Cluster}\label{cluster}
 
-Un generico gruppo di calcolatori interconnessi ed in grado di lavorare
-cooperativamente come un unico sistema è in generale indicato come
+Un gruppo di calcolatori interconnessi ed in grado di lavorare
+cooperativamente come un unico sistema è in genericamente indicato come
 \emph{cluster}.
 
-Perchè un cluster possa essere considerato come un sistema a memoria
-distribuita è necessario: - hardware di rete ad elevate prestazioni -
-uno strato software che implementi le funzionalità richieste
-(interfacce, protocolli, librerie, etc.) - applicativi che sfruttino le
-capacità del sistema
+Perché un cluster possa essere considerato come un sistema a memoria
+distribuita è necessario:
 
-Un esempio di queste librerie è \emph{MPI} (Message Passing Interface)
-che permette di implementare in diversi linguaggi (C, C++, Fortran,
-Python, Julia) applicativi per sistemi a memoria distribuita. L'ovvia
-premessa è che, indipendentemente dal sistema particolare o dal
-linguaggio di programmazione, l'algoritmo sia parallelizzabile.
+\begin{itemize}
+\tightlist
+\item
+  hardware di rete ad elevate prestazioni
+\item
+  uno strato software che implementi le funzionalità richieste
+  (interfacce, protocolli, librerie, etc.)
+\item
+  applicativi che sfruttino le capacità del sistema
+\end{itemize}
+
+Un esempio di queste librerie è MPI (Message Passing Interface) che
+permette di implementare in diversi linguaggi (C, C++, Fortran, Python,
+Julia) applicativi per sistemi a memoria distribuita. L'ovvia premessa è
+che, indipendentemente dal sistema particolare o dal linguaggio di
+programmazione, l'algoritmo sia parallelizzabile.
 
 In generale esistono tre tipi di cluster (i primi due sono i più
 diffusi):
@@ -387,7 +409,7 @@ diffusi):
 \item
   \textbf{HPC Cluster}: le macchine suddividono l'esecuzione di un
   \emph{job} in più processi e questi ultimi vengono istanziati
-  simulataneamente su più macchine (calcolo distribuito).
+  simultaneamente su più macchine (calcolo distribuito).
 \end{enumerate}
 
 In generale i vantaggi offerti da un cluster rispetto ad un singolo
@@ -439,11 +461,20 @@ IBM compatibili, implementati utilizzando software Open Source con lo
 scopo di eseguire task computazionalmente intensivi in genere in ambito
 tecnico scientifico.
 
-I Beowulf cluster sono caratterizzati da - Accesso al sistema possibile
-solo dal nodo principale, che spesso è l'unico ad essere dotato di
-tastiera e monitor. - Nodi basati su di una architettura standard
-(x86,AMD64,PowerPC,etc.), usualmente uguale per tutti i nodi. - Utilizzo
-di un sistema operativo (in genere GNU/Linux) e software Open Source
+I Beowulf cluster sono caratterizzati da
+
+\begin{itemize}
+\tightlist
+\item
+  Accesso al sistema possibile solo dal nodo principale, che spesso è
+  l'unico ad essere dotato di tastiera e monitor.
+\item
+  Nodi basati su di una architettura standard (x86, AMD64, PowerPC,
+  etc.), usualmente uguale per tutti i nodi.
+\item
+  Utilizzo di un sistema operativo (in genere GNU/Linux) e software Open
+  Source
+\end{itemize}
 
 \subsection{Batch System}\label{batch-system}
 
@@ -457,7 +488,7 @@ Per poter distribuire i job degli utenti su un cluster è necessario un
 software chiamato batch system (o PBS, Portable Batch System). Questi
 software si occupano di gestire l'ordine di esecuzione dei job e, in un
 sistema distribuito, di scegliere il nodo su cui verranno eseguiti.
-Dunque i batch sistem hanno il compito di accomodare le richieste degli
+Dunque i batch system hanno il compito di accomodare le richieste degli
 utenti (\emph{domanda}) e la disponibilità (limitata) di risorse
 (\emph{offerta}), operazione nota in questo contesto come
 \textbf{matchmaking}.
@@ -479,9 +510,8 @@ Genericamente i parametri rispetto a cui viene ottimizzato un algoritmo
 di scheduling sono
 
 \begin{itemize}
-\tightlist
 \item
-  \textbf{Throughput}: il numero totale di job che vengono completatti
+  \textbf{Throughput}: il numero totale di job che vengono completandoti
   nell'unità di tempo
 \item
   \textbf{Latenze} ed in particolare
@@ -506,12 +536,12 @@ ed è necessario realizzare un compromesso. I criteri con cui si realizza
 quest'ultimo sono caratteristici del particolare algoritmo di scheduling
 e rispondono a particolari esigenze, ad esempio, nel caso di un sistema
 in cui la sottomissione di job è un servizio a pagamento, parametri come
-la fairness ed il waiting time diventano prioritarì.
+la fairness ed il waiting time diventano prioritari.
 
-Alcuni esempi algoritmi di scheduling sono Unix Scheduling, FCFS (first
-Come, first Served), SJR (Shortest Job first), Small Job first / Big Job
+Alcuni esempi algoritmi di scheduling sono Unix Scheduling, FCFS (First
+Come, First Served), SJR (Shortest Job first), Small Job first / Big Job
 first, Priority Scheduling, Round Robin, Multilevel Queue, Multilevel
-Feedback Queue, FairShare.
+Feedback Queue, Fair-share.
 
 \section{Principi di sicurezza}\label{principi-di-sicurezza}
 
@@ -553,7 +583,7 @@ mentre il destinatario lo decifra utilizzando una seconda chiave.
 
 Storicamente i primi algoritmi crittografici erano a \textbf{chiave
 simmetrica}, nel senso che una chiave poteva essere ottenuta dall'altra
-(ad esempio perchè erano identiche). Per esempio \textbf{AES} (Advanced
+(ad esempio perché erano identiche). Per esempio \textbf{AES} (Advanced
 Encryption Standard, anche conosciuto come \emph{Rijndael}) è un
 algoritmo a chiave simmetrica selezionato dal NIST (National Institute
 of Standards and Technology) sia perché (ad oggi) crittograficamente
@@ -577,11 +607,8 @@ utenti come il quadrato del numero di questi ultimi.
 
 Questo genere di problemi è risolto tramite l'uso di \textbf{chiavi
 asimmetriche}. Negli algoritmi asimmetrici esistono due chiavi, una
-detta \textbf{pubblica} e l'altra \textbf{privata}. La chiave pubblica è
-unicamente in grado di cifrare, invece la chiave privata è sia in grado
-di cifrare che di decifrare un messaggio cifrato utilizzando una chiave
-pubblica o privata.
-
+detta \textbf{pubblica} e l'altra \textbf{privata}, e la chiave privata
+è in grado di decifrare un messaggio cifrato tramite la chiave pubblica.
 Tramite l'uso di algoritmi asimmetrici il destinatario può inviare (o
 rendere appunto pubblica) una copia della propria chiave pubblica, ma
 conservare la propria chiave privata, e per il mittente sarà sufficiente
@@ -635,10 +662,10 @@ fatto è che esistono certamente collisioni.
 Può essere più economico, o interessante per altre ragioni, calcolare le
 funzioni di hash per due stringe e confrontare i risultati che
 confrontare direttamente le stringe di partenza. In questo caso il
-risultato delle funzioni di hash si chiama \textbf{checksum}. In questo
-caso si preferiscono funzioni di hash che abbiano la ulteriore proprietà
-che la probabilità di collisione sia \emph{piccola} per stringhe di
-partenza \emph{simili}.
+risultato delle funzioni di hash si chiama \textbf{checksum} e si
+preferiscono funzioni di hash che abbiano la ulteriore proprietà che la
+probabilità di collisione sia \emph{piccola} per stringhe di partenza
+\emph{simili}.
 
 L'integrità, l'autenticità ed il non ripudio possono essere ottenuti
 sfruttando le funzioni di hash e l'algoritmo RSA. In questo caso il
@@ -657,7 +684,7 @@ Se i due hash coincidono il destinatario potrà dedurre che
 \item
   Il messaggio ricevuto coincide (a meno di una collisione, eventualità
   con probabilità trascurabili) con quello su cui il mittente ha
-  apportato la firma
+  apportato la firma (integrità)
 \item
   Il mittente può essere solo il proprietario della chiave privata
   (autenticità) e quest'ultimo non può negare di aver firmato il
@@ -697,8 +724,8 @@ Esistono due modelli per garantire la seconda di queste premesse
 Nel secondo caso si sfrutta l'assunto che se si conosce l'identità di un
 utente e quest'ultimo \emph{garantisce} sull'identità di un terzo
 utente, allora si può considerare (ragionevolmente) sicura l'identità di
-questo terzo utente, anche nel caso non fossimo in grado di stabilirne
-direttamente l'identità.
+questo terzo utente, anche nel caso non fossimo in grado di stabilirla
+direttamente.
 
 Questo ragionamento si può applicare più volte ed è eventualmente
 possibile stabilire in questo modo una o più catene di relazioni di
@@ -823,7 +850,8 @@ Inoltre una Grid presuppone l'assenza di
   comunque esterni alla Grid.
 \end{enumerate}
 
-Il genere di problemi che una Grid cerca di risolvere è del tipo
+Dal punto di vista dell'utente il genere di problemi che una Grid cerca
+di risolvere è del tipo
 
 \begin{quote}
 Eseguire il programma X nel sito Y con permessi P, provvedendo accesso
@@ -895,12 +923,12 @@ Le varie componenti di un Grid middleware si possono classificare in
   con i siti di calcolo, etc.
 \end{enumerate}
 
-Considerando l'esempio di EGI è possibile illustrare i disersi
+Considerando l'esempio di EGI è possibile illustrare i diversi
 componenti di un Grid middleware.
 
 Un utente che vuole sottomettere un job, in questo contesto noto come
 \emph{gridlet}, deve preparare un \textbf{job description file} ovvero
-un file che contiene una descrione del job in un linguaggio noto come
+un file che contiene una descrizione del job in un linguaggio noto come
 \textbf{JDL} (Job Description Language).
 
 JDL è un linguaggio flessibile, estensibile e di alto livello, derivato
@@ -935,7 +963,7 @@ Altri campi importanti sono
   sua volta normale (default) o parametrico, \textbf{DAG} (Directed
   Acyclic Graph) o \textbf{Collection}
 \item
-  \texttt{Argoments} : contiene gli argomenti da passare allo script che
+  \texttt{Arguments} : contiene gli argomenti da passare allo script che
   deve essere eseguito
 \item
   \texttt{Environment} : contiene una o più variabili d'ambiente da
@@ -1051,19 +1079,19 @@ In genere in una Grid viene utilizzato (ed ampliato) lo standard X.509.
 Ad esempio in EGI le certification authority riconosciute sono diverse
 ed hanno in genere base nazionale, tuttavia esiste un progetto per la
 coordinazione delle CA europee chiamato EUGridPMA (quest'ultimo in
-realtà include diverse CA extra-europee, oltre a collaborare con analoge
-organizzazioni in Asia e negli Stati Uniti).
+realtà include diverse CA extra-europee, oltre a collaborare con
+analoghe organizzazioni in Asia e negli Stati Uniti).
 
 Sempre in EGI i root certificate sono distribuiti tramite
 \emph{pacchetti} per diversi sistemi operativi e disponibili in
 repository pubblici (dopo aver aggiunto il repository è possibile
-installare tutti i certificati tramite il metapacchetto
+installare tutti i certificati tramite il meta-pacchetto
 \texttt{lcg-CA}).
 
-Uno degli standard di sicurezza adottato su Grid è (Grid Security
+Uno degli standard di sicurezza adottato su Grid è GSI (Grid Security
 Infrastructure) basato sullo standard PKI X.509. In questo standard ogni
 transazione (scambio di dati, invio di istruzioni, etc.) è
-\textbf{mutualmente autenticato}.
+\textbf{mutualmente autenticata}.
 
 Infatti tramite lo standard di sicurezza X.509 è possibile risolvere
 (oltre ai problemi di confidenzialità, integrità e non ripudio) il
@@ -1092,7 +1120,7 @@ una connessione
   B verifica la firma e autentica A
 \end{enumerate}
 
-Perchè vi sia mutua autenticazione si ripete la procedura a ruoli
+Perché vi sia mutua autenticazione si ripete la procedura a ruoli
 invertiti. Si osserva che il solo certificato non autentica A, ma
 garantisce soltanto la corrispondenza fra l'identità di A ed una chiave
 pubblica. Invece nella procedura descritta (anche nota come CHAP,
@@ -1156,7 +1184,7 @@ garantiti da due diverse entità
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Virtual Organizazion (VO)
+  Virtual Organization (VO)
 \item
   Resource Provider (RP),
 \end{enumerate}
@@ -1203,9 +1231,9 @@ aggiunge i campi al proxy e lo firma.
 
 \section{Cloud Computing \& Storage}\label{cloud-computing-storage}
 
-Le tecnologie di cloud computig hanno avuto negli ultimi anni largo
+Le tecnologie di cloud computing hanno avuto negli ultimi anni largo
 impiego nelle realtà aziendali ed è sempre più probabile che nel futuro
-diventeranno parte integrante dellle infrastrutture per il calcolo
+diventeranno parte integrante delle infrastrutture per il calcolo
 scientifico (attualmente già in fase di sperimentazione).
 
 Storicamente Amazon è stata fra le prime aziende a sperimentare queste
@@ -1244,7 +1272,7 @@ bytecode ed eseguito su JVM. Questo risolve (in teoria) non solo il
 problema della portabilità del codice, che in questo modo è indipendente
 dalla piattaforma, ma anche dello stesso eseguibile, ovvero il java
 bytecode che può essere eseguito su architetture e sistemi operativi
-diversi purchè sia stata implementata per questi ultimi una JVM.
+diversi purché sia stata implementata per questi ultimi una JVM.
 
 Nel discorso che segue per virtualizzazione si intenderà
 \emph{virtualizzazione dell'intera piattaforma hardware}, ovvero dove
@@ -1264,13 +1292,13 @@ Il caso in cui i sistemi virtualizzati (\emph{guest}) abbiano la stessa
 architettura dei sistemi ospite (\emph{host}) si può distinguere ancora
 in \textbf{virtualizzazione completa} e \textbf{paravirtualizzazione}.
 
-Nel caso della virtualizzzazione completa il sistema operativo ospite
-non è a conoscenza di essere eseguito su di una macchina virtuale e vede
-le stesse interfacce di una macchina fisica e dunque funziona senza
-alcuna modifica. In questo caso il livello software fra le macchine
-virtuali (VM) ed la macchina fisica viene detto \textbf{hypervisor} ed
-ha l'onere di tradurre (o inoltrare) le \emph{system call} delle prime
-verso quest'ultima.
+Nel caso della virtualizzazione completa il sistema operativo ospite non
+è a conoscenza di essere eseguito su di una macchina virtuale e vede le
+stesse interfacce di una macchina fisica e dunque funziona senza alcuna
+modifica. In questo caso il livello software fra le macchine virtuali
+(VM) ed la macchina fisica viene detto \textbf{hypervisor} ed ha l'onere
+di tradurre (o inoltrare) le \emph{system call} delle prime verso
+quest'ultima.
 
 Nel caso della paravirtualizzazione i sistemi operativi delle VM sono a
 conoscenza della virtualizzazione dell'hardware sottostante e possono
@@ -1303,8 +1331,8 @@ eseguiti in user space, in grado di fornire funzionalità di
 virtualizzazione. Un esempio di questi ultimi è Oracle VirtualBox.
 
 Esiste in realtà un terzo genere di hypervisor, in qualche misura ibrido
-rispetto ai primi due, detto \textbf{KVM} (*Linux Kernel-based Virtual
-Machine**), il quale è una infrastruttura di virtualizzazione che
+rispetto ai primi due, detto \textbf{KVM} (Linux Kernel-based Virtual
+Machine), il quale è una infrastruttura di virtualizzazione che
 trasforma il kernel Linux in un hypervisor. In questo caso le funzioni
 di virtualizzazione vengono offerte da applicativi in user space che
 tuttavia fanno uso di interfacce esposte da un modulo del kernel Linux.
@@ -1355,12 +1383,12 @@ virtualizzazione permettono l'esecuzione anche di sistemi \emph{legacy}
 permettendo ai responsabili IT di liberarsi del vecchio hardware non più
 supportato e più soggetto a guasti.
 
-Un ulteriore vantaggio è la \textbf{standardadizzazione del runtime},
-ovvero mettere appunti ambienti di sviluppo (ma anche postazioni di
-lavoro, server di posta, etc.) omogenei in maniera semplicemente
-riproducibile, e la \textbf{creazione di ambienti di test}, ovvero di
-ambienti isolati che possano essere facilmente creati, distrutti o
-ripristinati ad uno stato precedente, per testare software.
+Un ulteriore vantaggio è la \textbf{standardizzazione del runtime},
+ovvero mettere appunto ambienti di sviluppo, postazioni di lavoro,
+server di posta, etc., omogenei in maniera semplicemente riproducibile,
+e la \textbf{creazione di ambienti di test}, ovvero di ambienti isolati
+che possano essere facilmente creati, distrutti o ripristinati ad uno
+stato precedente, per testare software.
 
 \subsubsection{Svantaggi della
 virtualizzazione}\label{svantaggi-della-virtualizzazione}
@@ -1381,7 +1409,7 @@ Inoltre l'introduzione di un livello software fra i sistemi
 virtualizzati e lo hardware ha come inevitabile contropartita una
 \textbf{diminuzione delle performance} (seppure minima, grazie al
 perfezionamento di queste tecnologie ed al loro elevato grado di
-maturità). Concretamente questa riduzione delle perfomance consiste in
+maturità). Concretamente questa riduzione delle performance consiste in
 un overhead di esecuzione praticamente non rilevabile ed in una
 \textbf{riduzione del throughput di I/O} su disco e di rete misurabili
 (meno importanti nel caso di paravirtualizzazione e trascurabili per
@@ -1395,10 +1423,10 @@ applicazioni al calcolo scientifico.
 
 Storicamente in principio, in ambito aziendale ma anche scientifico, il
 calcolo era affidato ai \emph{mainframe}, grandi macchine con differenze
-architetturali (sia hw che sw) sostanziali rispetto ai server
-comunemente diffusi oggi, le cui risorse, ovvero tempo di calcolo,
-venivano allocate in maniera molto critica -- sistemi di questo genere
-continuano ad esistere ad esempio in banche o agenzie governative.
+architetturali sostanziali rispetto ai server comunemente diffusi oggi,
+le cui risorse, ovvero tempo di calcolo, venivano allocate in maniera
+molto critica -- sistemi di questo genere continuano ad esistere ad
+esempio in banche o agenzie governative.
 
 Successivamente, grazie agli sviluppi tecnologici ed in particolare la
 miniaturizzazione dell'elettronica, si affermò un modello di calcolo
@@ -1407,7 +1435,7 @@ computers}), successivamente sull'accesso a risorse di calcolo remote
 (\emph{client-server computing}) ed in particolare (successivamente)
 sull'accesso a documenti remoti (\emph{Web}).
 
-Negli ultmi dieci anni, in particolare grazie alle tecnologie di
+Negli ultimi dieci anni, in particolare grazie alle tecnologie di
 virtualizzazione, si è sviluppato un nuovo paradigma basato sull'accesso
 a risorse di calcolo remote con caratteristiche innovative detto
 \textbf{cloud computing}.
@@ -1442,7 +1470,7 @@ loro irreversibilità, nel senso che una volta acquistate non è possibile
 (o non è conveniente) cederle o smantellarle e rappresentano un costo
 fisso.
 
-Il \textbf{cloud computin} è un insieme di tecnologie che permette un
+Il \textbf{cloud computing} è un insieme di tecnologie che permette un
 approccio al problema delle risorse radicalmente differente, rendendo
 possibile ad esempio approntare una infrastruttura di calcolo in tempi
 dell'ordine di alcuni minuti, contro le diverse settimane necessarie nel
@@ -1452,8 +1480,7 @@ caso di IT tradizionale.
 computing}\label{definizione-di-cloud-computing}
 
 In letteratura la definizione di riferimento per le tecnologie di cloud
-computing è quella data dal \emph{National Institute of Standards and
-Technology} USA (\textbf{NIST}), che in sintesi definisce queste ultime
+computing è quella data dal NIST, che in sintesi definisce queste ultime
 come
 
 \begin{quote}
@@ -1463,7 +1490,8 @@ comunicazione} (ICT) come \textbf{servizio}
 
 Si osserva che concettualmente il termine di maggior peso in questa
 definizione è \emph{servizio}, il quale racchiude il contenuto
-innovativo di queste tecnologie (e dei paradigmi che rendono possibili).
+innovativo di queste tecnologie (e dei paradigmi che le rendono
+possibili).
 
 La definizione del NIST inoltre prevede alcuni punti
 
@@ -1534,15 +1562,13 @@ cloud computing il focus è sul servizio} e questa, che è una
 caratteristica distintiva di queste tecnologie, ne ha sancito il
 successo in ambito aziendale.
 
-Nel caso del grid computing la risorsa messa a disposizione dalla
-infrastruttura è essenzialmente la capacità di eseguire un applicativo,
-ovvero di sottomettere un job ad un \textbf{batch system} che può
-amministrare risorse facendo uso di tecnologie vicine a quelle adoperate
-per cloud computing. Quest'ultima è una differenza sostanziale rispetto
-al cloud computing propriamente detto in cui il panorama dei servizi
-offerti è molto più ricco e variegato, comportando un profondo divario
-nella implementazione di queste due tecnologie oltre che nell'approccio
-al problema.
+Infatti nel caso del grid computing la risorsa messa a disposizione
+dalla infrastruttura è essenzialmente la capacità di eseguire un
+applicativo, ovvero di sottomettere un job ad un \textbf{batch system}.
+Quest'ultima è una differenza sostanziale rispetto al cloud computing
+propriamente detto in cui il panorama dei servizi offerti è molto più
+ricco e variegato, comportando un profondo divario nella implementazione
+di queste due tecnologie oltre che nell'approccio al problema.
 
 Inoltre il grid computing si è affermato solamente all'interno della
 comunità scientifica mentre il cloud computing ha suscitato grande
@@ -1587,13 +1613,13 @@ sottostante.
 
 In questo caso l'utente può configurare il servizio assemblando
 virtualmente macchine, dischi, componenti di rete, etc, in maniera
-automatizzata senza interaggire direttamente con gli amministratori del
+automatizzata senza interagire direttamente con gli amministratori del
 datacenter in cui è fisicamente ospitato lo hardware (ad esempio tramite
 una interfaccia Web). Tuttavia questo da solo non sarebbe sufficiente a
 definire questo genere di servizi cloud computing, infatti ciò che
 permette di definire quest'ultimo cloud computing è la
 \textbf{flessibilità} del servizio, in accordo al concetto più generale
-di \emph{rapid elasticity} (che diventà \textbf{dinamicità} o
+di \emph{rapid elasticity} (che diventa \textbf{dinamicità} o
 \textbf{scalabilità dinamica} del caso SaaS o PaaS).
 
 Ad esempio un ipotetico servizio in cui sia possibile noleggiare una
@@ -1685,7 +1711,7 @@ noti sono \textbf{Gmail} e \textbf{Google Documents}.
 Questi applicativi sono probabilmente la forma più popolare di cloud
 computing e sono in genere di utilizzo molto immediato, infatti sono in
 genere accessibili direttamente tramite un browser web e rimuovono la
-necessità di installazione e configuratione del software su computer
+necessità di installazione e configurazione del software su computer
 individuali. Comportano inoltre notevoli semplificazioni anche per i
 fornitori del servizio, specialmente nell'erogazione del supporto dal
 momento che tutta l'infrastruttura (applicativi, rutime, sistema
@@ -1693,7 +1719,7 @@ operativo e hardware) sono loro direttamente accessibili.
 
 Sinteticamente si può dire che SaaS è un metodo per la distribuzione di
 applicativi che fornisce un accesso remoto alle funzionalità di questi
-ultimi, usualmente traimte interfacce Web, a diversi utenti forniti di
+ultimi, usualmente tramite interfacce Web, a diversi utenti forniti di
 licenza. Questi servizi sono in genere caratterizzati da
 
 \begin{itemize}
@@ -1750,7 +1776,7 @@ Non solo, infatti alcuni di questi servizi vengono offerti gratuitamente
 ad enti pubblici o di rilievo in cambio della pubblicità derivante dalla
 adesione ai servizi (ed alla raccolta di dati).
 
-Si osserva comunque che Google è in realtà fornisce PaaS, infatti le
+Si osserva comunque che Google in realtà fornisce PaaS, infatti le
 applicazioni offerte all'utenza condividono le stesse tecnologie, che
 vengono messe a disposizione degli sviluppatori: questi toolkit
 incarnano il concetto di PaaS.
@@ -1775,11 +1801,11 @@ lo rendevano un vero esempio di PaaS. Ad esempio l'accesso ad i dati
 avveniva programmaticamente: ovvero all'interno di un linguaggio di
 programmazione tramite delle apposite librerie.
 
-Un'altra caratteristica innovativa di S3 dispobilile fin dalla nascita
+Un'altra caratteristica innovativa di S3 disponibile fin dalla nascita
 del servizio era quella di richiedere che i dati venissero conservati in
 data center geograficamente distribuiti.
 
-In un secondo momento è stato varate un servizio per la creazione di
+In un secondo momento è stato varato un servizio per la creazione di
 macchine virtuali, ovvero \emph{Amazon Elastic Computing Cloud}
 (\textbf{EC2}), che rappresenta la formulazione classica di IaaS.
 
@@ -1795,18 +1821,18 @@ Quanto presentato fin'ora potrebbe indurre a credere che i casi d'uso
 delle tecnologie di cloud computing riguardino solamente alcune grandi
 aziende (Amazon, Google, etc.), tuttavia non è questo il caso.
 
-Infatti cloud computing è appunto una tecnologia ed i suoi impiegi
+Infatti cloud computing è appunto una tecnologia ed i suoi impieghi
 possono essere classificati in base a 3 caratteristiche indipendenti:
 \emph{service model}, \emph{deployment model} e \emph{isolation model}.
 
 I servizi degli esempi precedenti (EC2, Windows Azure,\ldots{}) sono
-infrastrutture di cloud che secondo lo standard viengono definite
+infrastrutture di cloud che secondo lo standard vengono definite
 pubbliche, nel senso che chiunque può accedere a questi ultimi dietro
 compenso economico.
 
 La caso opposto è quella di qualcuno che costruisca una infrastruttura
 di questo tipo per se stesso e quindi permetta l'accesso a certi utenti
-particolari. Benchè controintuitivo, questo genere di soluzioni viene
+particolari. Benché contro-intuitivo, questo genere di soluzioni viene
 scelto dalla gran parte delle istituzioni sia in ambito accademico che
 aziendale: ovvero queste istituzioni utilizzano tecnologie di cloud
 computing su risorse che sono completamente sotto il loro controllo.
@@ -1819,7 +1845,7 @@ In generale si distinguono diversi modelli di erogazione dei servizi:
 \item
   \textbf{Public cloud:} L'utente ha diritto all'accesso di risorse di
   calcolo remote che sono allocate dinamicamente su richiesta da
-  quest'ultimo, attraverso applicazioni web o API, via interntet a
+  quest'ultimo, attraverso applicazioni web o API, via internet a
   seguito della accensione di un contratto. Il service provider addebita
   all'utente una somma calcolata in base all'utilizzo delle risorse.
 \item
@@ -1852,14 +1878,23 @@ In generale si distinguono diversi modelli di erogazione dei servizi:
   istituzioni.
 \end{enumerate}
 
-Per isolamento si intendono una serie di aspetti come: -
-\textbf{Segmentazione delle risorse:} gli utenti devono avere pieno
-accesso alla quantità di risorse che gli è stata destinata e non altre -
-\textbf{Protezione dei dati:} impedire l'accesso o la scrittura di dati
-da parte di utenti senza permessi - \textbf{Sicurezza delle
-applicazioni:} impedire l'esecuzione o la modifica di applicazioni da
-parte di utenti senza permessi - \textbf{Auditing:} monitoraggio degli
-accessi ai propri file o applicativi da parte degli utenti
+Per isolamento si intendono una serie di aspetti come:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Segmentazione delle risorse:} gli utenti devono avere pieno
+  accesso alla quantità di risorse che gli è stata destinata e non altre
+\item
+  \textbf{Protezione dei dati:} impedire l'accesso o la scrittura di
+  dati da parte di utenti senza permessi
+\item
+  \textbf{Sicurezza delle applicazioni:} impedire l'esecuzione o la
+  modifica di applicazioni da parte di utenti senza permessi
+\item
+  \textbf{Auditing:} monitoraggio degli accessi ai propri file o
+  applicativi da parte degli utenti
+\end{itemize}
 
 ed i modelli di isolamento sono essenzialmente due:
 
@@ -1914,11 +1949,11 @@ computing di tipo IaaS. Alcuni di questi sono proprietari, come
 \textbf{OpenNebula}, ma in ogni caso si tratta di software che può
 essere installato e configurato su hardware di proprio controllo per
 implementare un cloud privato (ma che può eventualmente essere reso
-successivamente publico).
+successivamente pubblico).
 
 A differenza di quest'ultimo il software impiegato da piattaforme di
-cloud pubblico, come ad esempio AWS, non può essere impiegato al difuori
-della rispettiva piattaforma ed è accessibile solo tramite le IPA
+cloud pubblico, come ad esempio AWS, non può essere impiegato al di
+fuori della rispettiva piattaforma ed è accessibile solo tramite le IPA
 pubbliche.
 
 \paragraph{Avvantaggiarsi delle tecnologie
@@ -1943,7 +1978,7 @@ In particolare questo software deve avere le seguenti caratteristiche
   tra loro, dunque aggirando le latenze di comunicazione tra i processi.
 \item
   \textbf{Failover in app:} capacità intrinseca ed automatica di
-  gestione di una eventuale interruzione anomala dei sottoprocessi,
+  gestione di una eventuale interruzione anomala dei sotto-processi,
   provvedendo meccanismi per farne partire altri
 \item
   \textbf{Scalabilità in app:} capacità di modificare automaticamente e
@@ -1955,7 +1990,7 @@ In particolare questo software deve avere le seguenti caratteristiche
 
 La \emph{EGI federated cloud} è una organizzazione che riunisce
 istituzioni dotate di sistemi di cloud computing privati ed aggrega
-questi sistemi offrendo alla comunità scientifica, in europa e nel
+questi sistemi offrendo alla comunità scientifica, in Europa e nel
 mondo, servizi di tipo IaaS come unico service provider.
 
 Le idee dietro questo progetto internazionale sono essenzialmente
@@ -1971,7 +2006,7 @@ Un aspetto interessante di questo \emph{federated cloud} è il
 \textbf{catalogo delle macchine virtuali}, ovvero un elenco pubblico di
 piattaforme o servizi sviluppati dagli utenti e sottomessi da questi
 ultimi. Le macchine virtuali in questo catalogo vengono validate dalla
-federazione ed in questo modo è possibile per gli utenti instanziare
+federazione ed in questo modo è possibile per gli utenti istanziare
 servizi sviluppati da altri utenti in un ambiente collaborativo aperto.
 
 \subsection{Cloud Storage}\label{cloud-storage}
@@ -2011,7 +2046,7 @@ istanza le modifiche vengono perse)
   consistere anche di un solo volume NFS (\emph{Network File System})
   montato sulle macchine che devono avere accesso ai file. Tuttavia man
   mano che le infrastrutture scalano in dimensione diventa necessario
-  usare file system che possano aumentare dinamicamente le proprie
+  usare file system che possa aumentare dinamicamente le proprie
   dimensioni e migliorare le performance sfruttando parallelamente
   l'hardware a disposizione.
 \item
@@ -2034,7 +2069,7 @@ istanza le modifiche vengono perse)
   prevista una struttura a directory ma una organizzazione ad
   \textbf{oggetti}, file binari eventualmente provvisti di metadati, e
   \textbf{bucket}, contenitori in cui scrivere/leggere oggetti (ma non
-  altri bucket, non è infatti possibile costrurire alberi di bucket ed
+  altri bucket, non è infatti possibile costruire alberi di bucket ed
   esiste un solo livello). Oltre alle IPA è in genere possibile accedere
   ai file (oggetti) tramite web services sfruttando il protocollo HTTP.
   Un tipico caso d'uso di questa tipologia di cloud storage è la
@@ -2092,104 +2127,185 @@ file ai livelli di astrazione superiori.
 
 \section{Analisi di Big Data}\label{analisi-di-big-data}
 
-Esigenza di utilizzare i big data: cambia l'approccio all'analisi dei
-dati: algoritmi più complicati. Si è passati da qualche tera a peta e
-adesso anche ad exabyte. Quando si parla di analisi a big data quello
-che vogliamo avere è una architettura scalare e non progettata per un
-target, ovvero le cui prestazioni richieste dipendano dalla quantità di
-dati. Esempio: Facebook il cui numero di dati cresce continuamente del
-tempo senza far trasparire un affanno da parte dell'infrastruttura.
+Per \textbf{Big Data} si intendono \emph{dataset} le cui dimensioni
+trascendono le capacità di hardware e software convenzionali di
+catturare, gestire o processare dati in tempi ragionevoli. Tuttavia
+bisogna tenere presente che il concetto di big data è in costante
+evoluzione e la crescita delle dimensioni effettive dei dataset
+associati è molto veloce (di alcuni ordini di grandezza in pochi anni).
 
 \subsection{Apache Hadoop}\label{apache-hadoop}
 
-E un software open source (nato dall'esperienza di Google nei suoi data
-center). Vogliamo che sia
+\textbf{Apache Hadoop} è un framework software scritto in Java per
+l'analisi di big data su cluster con le seguenti caratteristiche
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Scalabile} : nuovi nodi possono essere aggiunti o rimossi
+  \emph{a caldo}, senza modifiche all'infrastruttura o alle applicazioni
+  che accoglie
+\item
+  \textbf{Efficiente} : rendendo possibile il calcolo su un sistema ad
+  elevato parallelismo (\emph{massively parallel computing}) senza
+  l'impiego di hardware specifico
+\item
+  \textbf{Flessibile} : possibilità di incorporare e scrivere
+  applicazioni per qualsiasi genere di dato, strutturato o meno.
+\item
+  \textbf{Tollerante ai guasti} : in caso di malfunzionamento di un
+  nodo, perdita di una replica di un file o di un malfunzionamento di un
+  disco, il sistema è in grado di gestire automaticamente il problema
+\end{itemize}
+
+Il framework Hadoop comprende
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Hadoop Common} : le utility e le librerie comuni necessarie
+  agli altri servizi
+\item
+  \textbf{Hadoop Distributed File System (HDFS)} : un file system in
+  grado di utilizzare risorse distribuite e massimizzare il volume di
+  dati accessibili alle applicazioni
+\item
+  \textbf{Hadoop YARN} : un framework per lo scheduling dei job e per la
+  gestione delle risorse di archiviazione
+\item
+  \textbf{Hadoop MapReduce} : un sistema per il calcolo parallelo basato
+  su YARN ed ottimizzato per grandi dataset
+\end{itemize}
+
+I problemi riscontrati nella analisi di grandi dataset sono in genere
+legati al temo di CPU e alla lettura dei dati. La soluzione offerta da
+Hadoop consiste in un unico framework per la gestione integrata dei
+processi e dei dati, che cerca di porre rimedio a questi problemi e di
+risolvere le inefficienze di un approccio tradizionale.
+
+L'osservazione principale è che trasferire i dati verso le CPU (come nel
+caso tradizionale di macchine separate per l'archiviazione) è sia
+costoso, per via delle infrastrutture di rete, che inefficiente, per via
+delle latenze. Una possibile soluzione è scalare il numero di CPU
+\emph{assieme} ai dischi e tenere queste ultime il più vicino possibile
+ai dati da analizzare. Si osserva tuttavia che uno degli svantaggi di
+questo approccio è che la gestione delle failure diventa più delicata.
+
+\subsection{HDFS}\label{hdfs}
+
+L'utente può interagire con HDFS in diversi modi
+
+\begin{itemize}
+\tightlist
+\item
+  montare dischi in userspace (FUSE) simulando un file system di basso
+  livello
+\item
+  monitorare il file system utilizzando una interfaccia Web
+\item
+  utilizzando le API in Java
+\item
+  utilizzando la shell nativa di HDFS da terminale
+\end{itemize}
+
+L'architettura del sistema di archiviazione in un cluster Hadoop tramite
+HDFS comprende i seguenti componenti
+
+\begin{itemize}
+\tightlist
+\item
+  Uno o più \textbf{client} che possono inoltrare richieste al sistema
+  tramite le interfacce citate
+\item
+  Un \emph{unico} \textbf{namenode} che coordina l'archiviazione e la
+  lettura dei dati
+\item
+  Diversi (usualmente centinaia o migliaia) di \textbf{datanodes}, che
+  contengono fisicamente i dati
+\end{itemize}
+
+\subsubsection{Scrittura di file in
+HDFS}\label{scrittura-di-file-in-hdfs}
+
+La scrittura di un file su HDFS avviene in più fasi
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  scalabile
+  \textbf{Request from user} L'utente chiede al client di scrivere un
+  file e fornisce ridondanza desiderata, \textbf{replication factor}, e
+  le dimensioni dei blocchi in cui questo verrà diviso dal sistema,
+  \textbf{blocksize}.
 \item
-  cost effective
+  \textbf{Client ask namenode} Il client divide il file in blocchi delle
+  dimensioni stabilite e comunica al namenode ridondanza e numero di
+  blocchi
 \item
-  flessibile
+  \textbf{Namenode assignment} Il namenode determina i datanode su cui
+  archiviare i blocchi. Infine restituisce gli indirizzi dei datanode al
+  client (in ordine di distanza dal client crescente)
 \item
-  Fail tolerant
+  \textbf{Client writes data} Il client comincia a scrivere i dati sul
+  primo datanode.
+\item
+  \textbf{Replication pipeline} Il primo datanode inoltra i dati al
+  secondo e così via, fino all'ultimo datanode
+\item
+  \textbf{Completion and Inform namenode} Quando l'ultimo datanode
+  finisce di ricevere i dati lo comunica al namenode.
+\item
+  \textbf{Namenode stores metadata} Ad operazioni concluse il namenode
+  conserva i metadati dei file archiviati sul proprio disco (indirizzi
+  dei namenode, etc.).
 \end{enumerate}
 
-Nel caso specifico la scelta iniziale di hadop è stata quella di partire
-da dei moduli di basi e di dare la possibilità a chi serve di
-appoggiarsi su quelle librerie di base creare dei progetti correlati.
-Alla librerie di base si aggiunge quella del file system e poi due
-moduli per gestire anche la parte legata a come far girare dei programmi
-sui dati. Quindi in questo caso la gestione dei dati e delle code è
-unica e questo porta dei vantaggi. Su questa base (ovvero oggetti per
-gestire dati e far girare codice) si sono appaggiati dei progetti
-paralleli (come cassandra che è un sistema per creare database).
-\subsection{Idea} Nasce da Google. Quando devo far girare una grande
-quantità di dati ho due problemi: uno è la CPU e l'altro è leggere i
-dati. Questi due problemi sono strettamente correlati. Dobbiamo cercare
-di non far stare la CPU senza far niente ma al tempo stesso non dare
-troppi dati in modo che non riesce a processarli.
+TODO
 
-La somma dei dischi deve essere sufficientemente veloce (non è singolo
-disco) e anche la rete deve essere sufficientemente veloce. Quest'ultimo
-aspetto è in realtà il più costoso. L'idea di google è cambiare come
-vengono processati i dati.
-
-FIG 1 sul quaderno.
-
-Il problema dell'approccio innovativo è che se prima l'archiviazione di
-dati era dedicata a macchine dedicate, ora non lo è piu e le failure
-diventano più importanti e si devono gestire meglio quest'utlime.
-Failure: problema ai dischi, problema alla macchina, problema di rete.
-Per la prima devo prevedere una ridondanza con delle repliche in ogni
-posto. In un datacenter grosso ci sono i domini di fallimento (che sono
-problemi che possono capitare tipo switch che si rompono o linee di
-alimentazione che si rompono e non fanno funzionare un singolo armadio
-ecc).
-
-E' basato su JAVA. Si voleva avere la possibilità di costruire un codice
-JAVA che sfruttasse in profondità il sistema. \subsection{Architettura}
-Si utilizza un programma JAVA di alto livello che simula l'interfaccia
-con il file system tramite Mont point FUSE che simuli il file system.
-FUSE è un layer che mi permette di simulare la vista a file system
-(cartelle ecc) anche se dietro c'è una cosa più complicata o di più alto
-livello.
-
+\begin{quote}
 l'idea di hadoop è quello di risolvere i problemi classici che avvengono
 in un data center. Immaginiamo che ci siano tre copie del mio file e ho
 due armadi. Conviene che le mie tre copie siano distribuite almeno una
 su un altro armadio in modo che se uno si spegne comunque un'altra copia
 sta sull'altro.
+\end{quote}
 
+\begin{quote}
 Chiedo la scrittura ad hadoop specificando la block size e il numero di
 repliche. Il client specifica queste cose al namenode che è un server
 che controlla tutto. Il namenode controlla dove è disponibile spazio e
 scrive il file sul primo datanode che copia poi sull'altro e cosi via.
-Questo riduce la complessita del client appoggiando uan parte dei
-compiti sul datasistem. Una volta che tutti e tre hanno comunicato al
+Questo riduce la complessità del client appoggiando una parte dei
+compiti sul datasystem. Una volta che tutti e tre hanno comunicato al
 namenode che hanno scritto la procedura è finita. Quindi la velocità
-effettiva è tre volte piu lenta rispetto alla copia singola. Il sistema
+effettiva è tre volte più lenta rispetto alla copia singola. Il sistema
 quindi ha completato la scrittura di quel blocco e si passa al blocco al
 successivo.
+\end{quote}
 
+\begin{quote}
 Quando il client vuole leggere un file va al namenode e chiede il file.
 Il namenode comunica con i datanode in parallelo le richieste sui file
 che comunicano i blocchi presenti di quel file. Il vantaggio è che se un
 nodo per esempio è occupato o non funziona il sistema può recuperare
 dagli altri nodi il dato cercato e questo per l'utente è completamente
 trasparente.
+\end{quote}
 
-Riguardo la placemente startegy lui fa questo quando si richiede di fare
-3 copie: una replica in un reck e un altra replica in 2 reck. Questo fa
-si che si minimizzano quanto piu possibile l'uso degli uplink di rete
+\begin{quote}
+Riguardo la placement strategy lui fa questo quando si richiede di fare
+3 copie: una replica in un rack e un altra replica in 2 rack. Questo fa
+si che si minimizzano quanto più possibile l'uso degli up link di rete
 utilizzando la rete con la connessione interna del rack che è meno
 costosa. Quindi comunque ho la ridondanza senza aver stressato troppo
-l'uplink. Inoltre questi sistemi vengono utilizzati per scrivere poco e
-leggerli molte volte. Quidni avere due copie all'interno dello stesso
+l'up link. Inoltre questi sistemi vengono utilizzati per scrivere poco e
+leggerli molte volte. Quindi avere due copie all'interno dello stesso
 rack fa si che quando vado a fare analisi potrei leggere al doppio della
 velocità utilizzando le due copie all'interno dello stesso rack.
+\end{quote}
+
+\subsection{Map Reduce}\label{map-reduce}
+
+TODO
 
 \end{document}
